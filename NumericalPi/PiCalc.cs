@@ -12,9 +12,18 @@ namespace NumericalPi
         /// </summary>
         /// <param name="iterations">Number of iterations to perform</param>
         /// <returns>Approximate value of pi</returns>
+
+        const int numberOfTasks = 4 ;
         public double Calculate(int iterations)
         {
-            int insideUnitCircle = Iterate(iterations);
+            Task<int> task1 = IterateAsync(iterations/numberOfTasks);
+            Task<int> task2 = IterateAsync(iterations/numberOfTasks);
+            Task<int> task3 = IterateAsync(iterations/numberOfTasks);
+            Task<int> task4 = IterateAsync(iterations/numberOfTasks);
+
+            Task.WaitAll(task1, task2, task3, task4);
+
+            int insideUnitCircle = task1.Result + task2.Result + task3.Result + task4.Result;
             return insideUnitCircle * 4.0 / iterations;
         }
 
